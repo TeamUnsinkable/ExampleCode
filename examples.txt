@@ -1,0 +1,5 @@
+For Ping/Pong:
+roscore 
+rosrun nodeexamples 
+rosrun nodeexamples pong.py 
+
