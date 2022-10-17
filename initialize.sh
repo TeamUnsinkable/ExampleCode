@@ -34,6 +34,8 @@ if [ $(basename "$PWD") != "ExampleCode" ]; then
     exit
 fi
 
+exampleDir=$PWD
+
 if [ $(whoami) = root ]; then
     echo "you are smart to run this as root but I don't want things to break"
     echo "you will have to run this as a regular admin"
@@ -106,7 +108,7 @@ if [ "$answer" = "1" ]; then
     echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
     source ~/.bashrc
 
-    source /opt/ros/melodic/setup.bash
+    
 fi
 
 # if catkin is not found as a command, install it
@@ -114,10 +116,40 @@ if ! [ -x "$(command -v catkin)" ]; then
     sudo apt-get install ros-kinetic-catkin python-catkin-tools
 fi
 
-# the actual set up script
-echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
-source ~/.bashrc
-catkin init
-catkin build
-echo "source $PWD/devel/setup.bash" >> ~/.bashrc
-chmod +x src/nodeexamples/scripts/pong.py
+ask_q "would you like to install the PX4 autopilot dependancies?"
+
+if [ "$answer" = 1 ]; then
+    cd
+    git clone https://github.com/PX4/PX4-Autopilot.git --recursive
+    bash ./PX4-Autopilot/Tools/setup/ubuntu.sh
+    cd $exampleDir
+fi
+
+# # ask to set up the underwater vehicle simulator 
+# ask_q "would you like to install the Gazebo Underwater Simulator?"
+
+# if [ "$answer" = 1 ]; then
+#     sudo apt-get update
+#     sudo apt install ros-melodic-uuv-simulator
+
+#     # missing models bugfix
+
+#     git clone https://github.com/uuvsimulator/uuv_simulator.git
+#     cd uuv_simulator/uuv_assistants
+#     sudo cp -r ./templates/ /opt/ros/melodic/share/uuv_assistants/
+#     cd ../..
+#     rm -r -d -f uuv_simulator
+#     cd $exampleDir
+# fi
+
+ask_q "Have you built the catkin environment yet?"
+
+if [ "$answer" = 1 ]; then
+    # the actual set up script
+    catkin init
+    catkin build
+    echo "source $PWD/devel/setup.bash" >> ~/.bashrc
+    chmod +x src/nodeexamples/scripts/pong.py
+    chmod +x troubleshoot.sh
+fi
+
