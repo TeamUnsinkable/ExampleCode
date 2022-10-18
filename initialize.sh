@@ -93,11 +93,11 @@ if [ "$answer" = "1" ]; then
         sudo snap install code --classic
     fi
 
-    ask_q "would you like the Desktop edition is ROS (not recommended)"
+    ask_q "would you like the full ROS install? (only reccomended if you will be using the Gazebo sim)"
 
     # install ROS
     if [ "$answer" = 1 ]; then
-        sudo apt install ros-melodic-desktop
+        sudo apt install ros-melodic-desktop-full
     else
         sudo apt install ros-melodic-ros-base
     fi
@@ -113,7 +113,7 @@ fi
 
 # if catkin is not found as a command, install it
 if ! [ -x "$(command -v catkin)" ]; then
-    sudo apt-get install ros-kinetic-catkin python-catkin-tools
+    sudo apt-get install ros-melodic-catkin python-catkin-tools
 fi
 
 ask_q "would you like to install the PX4 autopilot dependancies?"
@@ -144,8 +144,9 @@ fi
 
 ask_q "Have you built the catkin environment yet?"
 
-if [ "$answer" = 1 ]; then
+if [ "$answer" = 0 ]; then
     # the actual set up script
+    source ~/.bashrc
     catkin init
     catkin build
     echo "source $PWD/devel/setup.bash" >> ~/.bashrc

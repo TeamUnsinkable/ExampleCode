@@ -18,7 +18,7 @@ print("\nSetting Mode")
 rospy.wait_for_service('/mavros/set_mode')
 try:
     change_mode = rospy.ServiceProxy('/mavros/set_mode', SetMode)
-    response = change_mode(custom_mode="ALT_HOLD")
+    response = change_mode(custom_mode="STABILIZED")
     rospy.loginfo(response)
 except rospy.ServiceException as e:
     print("Set mode failed: %s" %e)
